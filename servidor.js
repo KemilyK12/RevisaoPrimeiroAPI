@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-let alunos = [
+let ALUNOS = [
     { id: 1, nome: "Malu", curso: "Desenvolvimento de Sistemas" },
     { id: 2, nome: "Camily", curso: "Redes de computadores" },
     { id: 3, nome: "Kaue", curso: "Banco de dados" },
@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/alunos", (req, res) => {
-    res.json(alunos);
+    res.json(ALUNOS);
 });
 
 app.post("/alunos/cadastrar", (req, res) => {
@@ -26,10 +26,15 @@ app.post("/alunos/cadastrar", (req, res) => {
     //console.log("nome: " + nome);
     //console.log(`curso: ${curso}`);
 
-    const id = alunos.length > 0 ? alunos[alunos.length - 1].id + 1 : 1;
-    
+    if (!nome || !curso) {
+        return res.status(400).json({ msg: "Nome e curso são obrigatórios." });
+    }
+
+    const id = ALUNOS.length > 0 ? ALUNOS[ALUNOS.length - 1].id + 1 : 1;
+
 
     const novoAluno = {
+        id: id,
         nome: nome,
         curso: curso,
     }
@@ -38,6 +43,27 @@ app.post("/alunos/cadastrar", (req, res) => {
 
     res.status(201).json({ msg: "Aluno cadastrado com sucesso." });
 });
+
+app.get("/alunos/:valor", (req, res) => {
+    console.log(req)
+    const valor = Number(req.params.valor);
+
+    const alunos = ALUNOS.find(aluno => aluno.id === valor);
+
+    if (!alunos) {
+        return res.status(404).json({ msg: "Aluno não encontrado." });
+    }
+
+    res.status(200).json(alunos);
+})
+app.put("/alunos/valor", (req, res) => {
+    const valor = Number (req.params.id);
+    const { nome, curso } = req.body;
+
+    if (!nome || !curso) {
+        return res.status(400).json({ msg: "Nome e curso são obrigatórios." });
+    }
+})
 
 const PORTA = 3000;
 app.listen(PORTA, () => {
