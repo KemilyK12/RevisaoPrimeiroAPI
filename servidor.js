@@ -56,13 +56,33 @@ app.get("/alunos/:valor", (req, res) => {
 
     res.status(200).json(alunos);
 })
-app.put("/alunos/valor", (req, res) => {
-    const valor = Number (req.params.id);
+app.put("/alunos/:valor", (req, res) => {
+    const valor = Number(req.params.valor);
     const { nome, curso } = req.body;
 
     if (!nome || !curso) {
         return res.status(400).json({ msg: "Nome e curso são obrigatórios." });
     }
+
+    const indice = ALUNOS.findIndex(aluno => aluno.id === valor);
+    //console.log(indice);
+
+    if (indice === -1) {
+        return res.status(404).json({ msg: "Aluno não encontrado." });
+    }
+
+    ALUNOS[indice] = {
+        id: valor,
+        nome: nome,
+        curso: curso,
+    }
+    res.status(200).json({ msg: "Aluno atualizado com sucesso." });
+});
+
+app.delete("/alunos/:valor", (req, res) => {
+    const valor = Number(req.params.valor); 
+
+    const indice = ALUNOS.findIndex(aluno => aluno.id === valor);
 })
 
 const PORTA = 3000;
