@@ -39,7 +39,7 @@ app.post("/alunos/cadastrar", (req, res) => {
         curso: curso,
     }
 
-    alunos.push(novoAluno);
+  ALUNOS.push(novoAluno);
 
     res.status(201).json({ msg: "Aluno cadastrado com sucesso." });
 });
@@ -71,7 +71,7 @@ app.put("/alunos/:valor", (req, res) => {
         return res.status(404).json({ msg: "Aluno não encontrado." });
     }
 
-    ALUNOS[indice] = {
+  ALUNOS[indice] = {
         id: valor,
         nome: nome,
         curso: curso,
@@ -83,6 +83,15 @@ app.delete("/alunos/:valor", (req, res) => {
     const valor = Number(req.params.valor); 
 
     const indice = ALUNOS.findIndex(aluno => aluno.id === valor);
+
+    const alunosEncontrados = ALUNOS[indice];
+
+  ALUNOS.splice(indice, 1);
+
+  res.json({
+    msg: "Aluno removido com sucesso.",
+    aluno: alunosEncontrados
+  });
 })
 
 const PORTA = 3000;
